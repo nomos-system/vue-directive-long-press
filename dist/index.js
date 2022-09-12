@@ -5,7 +5,8 @@ export const directiveOption = {
         el.dataset.longPressTimeoutId = '0';
         const onpointerup = () => {
             clearTimeout(parseInt(el.dataset.longPressTimeoutId));
-            if (Math.abs(el.getBoundingClientRect().top - el.$_long_press_top) < 10) {
+            if (Math.abs(el.getBoundingClientRect().top - el.$_long_press_top) < 20 &&
+                Math.abs(el.getBoundingClientRect().left - el.$_long_press_left) < 20) {
                 if (vnode.componentInstance) {
                     vnode.componentInstance.$emit('long-press-stop');
                 }
@@ -18,8 +19,10 @@ export const directiveOption = {
         const onpointerdown = () => {
             document.addEventListener('pointerup', onpointerup);
             el.$_long_press_top = el.getBoundingClientRect().top;
+            el.$_long_press_left = el.getBoundingClientRect().left;
             const timeout = setTimeout(() => {
-                if (Math.abs(el.getBoundingClientRect().top - el.$_long_press_top) < 10) {
+                if (Math.abs(el.getBoundingClientRect().top - el.$_long_press_top) < 20 &&
+                    Math.abs(el.getBoundingClientRect().left - el.$_long_press_left) < 20) {
                     if (vnode.componentInstance) {
                         vnode.componentInstance.$emit('long-press-start');
                     }
