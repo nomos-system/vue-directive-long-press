@@ -1,7 +1,5 @@
-const longPressStop = new CustomEvent('long-press-stop');
-const longPressStart = new CustomEvent('long-press-start');
 export const directiveOption = {
-    bind(el, binding, vnode) {
+    beforeMount(el, binding, vnode) {
         el.dataset.longPressTimeoutId = '0';
         const onpointerup = () => {
             clearTimeout(parseInt(el.dataset.longPressTimeoutId));
@@ -11,6 +9,7 @@ export const directiveOption = {
                     vnode.componentInstance.$emit('long-press-stop');
                 }
                 else {
+                    const longPressStop = new CustomEvent('long-press-stop');
                     el.dispatchEvent(longPressStop);
                 }
             }
@@ -27,6 +26,7 @@ export const directiveOption = {
                         vnode.componentInstance.$emit('long-press-start');
                     }
                     else {
+                        const longPressStart = new CustomEvent('long-press-start');
                         el.dispatchEvent(longPressStart);
                     }
                 }
@@ -36,7 +36,7 @@ export const directiveOption = {
         el.$_long_press_pointerdown_handler = onpointerdown;
         el.addEventListener('pointerdown', onpointerdown);
     },
-    unbind(el) {
+    unmounted(el) {
         clearTimeout(parseInt(el.dataset.longPressTimeoutId));
         el.removeEventListener('pointerdown', el.$_long_press_pointerdown_handler);
     }

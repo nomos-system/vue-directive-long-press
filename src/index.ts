@@ -9,11 +9,8 @@ interface LongPressHTMLElement extends HTMLElement {
     };
 }
 
-const longPressStop = new CustomEvent('long-press-stop')
-const longPressStart = new CustomEvent('long-press-start')
-
 export const directiveOption = {
-    bind (el: LongPressHTMLElement, binding: VNodeDirective, vnode: VNode) {
+    beforeMount (el: LongPressHTMLElement, binding: VNodeDirective, vnode: VNode) {
         el.dataset.longPressTimeoutId = '0'
 
         const onpointerup = () => {
@@ -24,6 +21,7 @@ export const directiveOption = {
                 if (vnode.componentInstance) {
                     vnode.componentInstance.$emit('long-press-stop')
                 } else {
+                    const longPressStop = new CustomEvent('long-press-stop')
                     el.dispatchEvent(longPressStop)
                 }
             }
@@ -42,6 +40,7 @@ export const directiveOption = {
                     if (vnode.componentInstance) {
                         vnode.componentInstance.$emit('long-press-start')
                     } else {
+                        const longPressStart = new CustomEvent('long-press-start')
                         el.dispatchEvent(longPressStart)
                     }
                 }
@@ -53,7 +52,7 @@ export const directiveOption = {
         el.$_long_press_pointerdown_handler = onpointerdown;
         el.addEventListener('pointerdown', onpointerdown)
     },
-    unbind (el : LongPressHTMLElement) {
+    unmounted (el : LongPressHTMLElement) {
         clearTimeout(parseInt(el.dataset.longPressTimeoutId))
         el.removeEventListener('pointerdown', el.$_long_press_pointerdown_handler)
     }
